@@ -5,6 +5,6 @@ Refer to the [documentation](https://lazyvim.github.io/installation) to get star
 
 ### TODO
 
-- [ ] use project + which key in order to use different shortcut key in different workspace
+- [x] use project + which key in order to use different shortcut key in different workspace
 - [ ] let the markdown format hints shut the fuck up
 
