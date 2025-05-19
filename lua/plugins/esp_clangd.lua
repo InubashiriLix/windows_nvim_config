@@ -32,3 +32,20 @@ return {
         },
     },
 }
+
+-- NOTE: remember to add these content in your esp-idf project as .clangd file
+-- CompileFlags:
+--   CompilationDatabase: build
+--   Remove:
+--     - "-fno-tree-switch-conversion"
+--     - "-fno-shrink-wrap"
+--     - "-fstrict-volatile-bitfields"
+--     - "-mlongcalls"
+--     - "-mtext-section-literals"
+--     - "-fno-builtin-memcpy"
+--     - "-fno-builtin-memset"
+--     - "-fno-builtin-bzero"
+--     - "-fno-builtin-stpcpy"
+--     - "-fno-builtin-strncpy"
+--     - "-march=rv32imac_zicsr_zifencei"
+--
