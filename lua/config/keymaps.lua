@@ -7,6 +7,12 @@ vim.api.nvim_set_keymap("i", "jk", "<Esc>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("i", "kk", "<Esc>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("i", "kj", "<Esc>", { noremap = true, silent = true })
 
+-- ~/.config/nvim/lua/config/keymaps.lua
+-- fucking update delete the windows split shit
+vim.keymap.set("n", "<leader>wv", "<C-w>v", { desc = "Split window vertically" })
+vim.keymap.set("n", "<leader>ws", "<C-w>s", { desc = "Split window horizontally" })
+vim.keymap.set("n", "<leader>wq", "<C-w>q", { desc = "Close current window" })
+
 vim.api.nvim_create_user_command("RunSQL", function()
     -- 获取当前缓冲区的内容
     local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)

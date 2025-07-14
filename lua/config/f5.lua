@@ -57,23 +57,52 @@ local function parse_idfconfig(path)
     return conf
 end
 
--- 5. 全局绑定 <F5>：Markdown / Python / ESP-IDF build
+local function run_love_project()
+    local dir = vim.fn.expand("%:p:h") -- 当前文件所在目录
+    while dir ~= "" and dir ~= "." do
+        if
+            vim.loop.fs_stat(dir .. "/main.lua") -- 同时存在 main.lua …
+            and vim.loop.fs_stat(dir .. "/conf.lua")
+        then -- …与 conf.lua
+            send_to_term("love " .. vim.fn.shellescape(dir))
+            return true
+        end
+        local parent = vim.fn.fnamemodify(dir, ":h")
+        if parent == dir then
+            break
+        end
+        dir = parent
+    end
+    return false
+end
+
 vim.keymap.set("n", "<F5>", function()
     local ft = vim.bo.filetype
+
+    -- Markdown：浏览器预览
     if ft == "markdown" then
-        vim.cmd("MarkdownPreview")
-    elseif ft == "python" then
-        local file = vim.fn.expand("%:p")
-        send_to_term("python " .. vim.fn.shellescape(file))
-    else
-        local root = find_sdkconfig_root()
-        if root then
-            -- 切到项目根再执行 build
-            send_to_term("cd " .. vim.fn.shellescape(root) .. " && idf.py build")
-        else
-            vim.notify("F5 只在 Markdown/Python/ESP-IDF 项目中有效", vim.log.levels.INFO)
-        end
+        return vim.cmd("MarkdownPreview")
     end
+
+    -- Python：python <file>
+    if ft == "python" then
+        local file = vim.fn.expand("%:p")
+        return send_to_term("python " .. vim.fn.shellescape(file))
+    end
+
+    -- LÖVE：一旦找到 main.lua+conf.lua 就 love <root>
+    if run_love_project() then
+        return
+    end
+
+    -- ESP-IDF：sdkconfig → idf.py build
+    local root = find_sdkconfig_root()
+    if root then
+        return send_to_term("cd " .. vim.fn.shellescape(root) .. " && idf.py build")
+    end
+
+    -- 其它文件类型
+    vim.notify("F5 只在 Markdown / Python / LÖVE / ESP-IDF 项目中有效", vim.log.levels.INFO)
 end, { desc = "F5 → Build/Run" })
 
 -- 6. 全局绑定 <F6>：ESP-IDF flash（读取 .idfconfig.yaml 中的 serial_port）
